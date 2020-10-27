@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import test.dao.RoleDAO;
 import test.dao.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +26,16 @@ import java.util.Set;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
 
-    private RoleDAO roleDAO;
+    private final RoleDAO roleDAO;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
 
     @Autowired
-    public void setUserDAO(UserDAO userDAO) {
+    public UserServiceImpl(UserDAO userDAO, RoleDAO roleDAO) {
         this.userDAO = userDAO;
-    }
-
-    @Autowired
-    public void setRoleDAO(RoleDAO roleDAO) {
         this.roleDAO = roleDAO;
     }
 
@@ -63,6 +62,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void add(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         Set<Role> roles = new HashSet<>();
         roles.add(roleDAO.getRoleById(1L));
         user.setRoles(roles);
@@ -71,6 +71,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void edit(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleDAO.getRoleById(1L));
+        user.setRoles(roles);
         userDAO.edit(user);
     }
 

@@ -4,11 +4,8 @@ package test.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -23,17 +20,16 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource(value = "classpath:hibernate.properties")
+@PropertySource(value = "classpath:application.properties")
 @ComponentScan(basePackages = "test")
 public class PersistenceJPAConfig {
 
-    private Environment environment;
+    private final Environment environment;
 
     @Autowired
-    public void setEnvironment(Environment environment) {
+    public PersistenceJPAConfig(Environment environment) {
         this.environment = environment;
     }
-
 
     @Bean
     public DataSource dataSource() {
