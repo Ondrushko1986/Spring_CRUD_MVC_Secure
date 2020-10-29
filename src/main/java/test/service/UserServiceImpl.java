@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.RequestParam;
 import test.dao.RoleDAO;
 import test.dao.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,14 +55,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userDAO.getById(id);
     }
 
-    @Override
-    public User findByUsername(String username) {
-        return userDAO.getUserByName(username);
-    }
-
 
     @Override
-    public void add(User user) {
+    public void addFromRegistration(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         Set<Role> roles = new HashSet<>();
         roles.add(roleDAO.getRoleById(1L));
@@ -69,12 +65,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDAO.add(user);
     }
 
+
     @Override
-    public void edit(User user) {
+    public void add(User user, String role) {
+        if (role.equalsIgnoreCase("admin")) {
+            user.setRoles(Collections.singleton(new Role(2L, "ROLE_ADMIN")));
+        } else {
+            user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+        }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleDAO.getRoleById(1L));
-        user.setRoles(roles);
+        userDAO.add(user);
+    }
+
+    @Override
+    public void edit(User user, String role) {
+        if (role.equalsIgnoreCase("admin")) {
+            user.setRoles(Collections.singleton(new Role(2L, "ROLE_ADMIN")));
+        } else {
+            user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDAO.edit(user);
     }
 

@@ -10,19 +10,17 @@ import test.service.UserService;
 import java.util.List;
 
 @Controller
+@RequestMapping (value = "/admin")
 public class AdminController {
 
-    private UserService userService;
-
-    public AdminController() {
-    }
+    private final UserService userService ;
 
     @Autowired
     public AdminController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/admin")
+    @GetMapping
     public String allUsers(Model model) {
         List<User> users = userService.allUsers();
         model.addAttribute("usersList", users);
@@ -30,31 +28,31 @@ public class AdminController {
     }
 
 
-    @GetMapping(value = "admin/edit/{id}")
+    @GetMapping(value = "/edit/{id}")
     public String editPage(@PathVariable("id") int id, Model model) {
         User user = userService.getById(id);
         model.addAttribute("user", user);
         return "editPage";
     }
 
-    @PostMapping(value = "admin/edit")
-    public String editUser(@ModelAttribute("user") User user) {
-        userService.edit(user);
+    @PostMapping(value = "/edit")
+    public String editUser(@ModelAttribute("user") User user, @RequestParam String role) {
+        userService.edit(user,role);
         return "redirect:/admin";
     }
 
-    @GetMapping(value = "/admin/add")
+    @GetMapping(value = "/add")
     public String addPage() {
         return "addPage";
     }
 
-    @PostMapping(value = "/admin/add")
-    public String addUserByAdmin(@ModelAttribute("user") User user) {
-        userService.add(user);
+    @PostMapping(value = "/add")
+    public String addUserByAdmin(@ModelAttribute("user") User user, @RequestParam String role){
+        userService.add(user,role);
         return "redirect:/admin";
     }
 
-    @GetMapping(value = "/admin/delete/{id}")
+    @GetMapping(value = "/delete/{id}")
     public String deleteUser(@PathVariable("id") int id) {
         User user = userService.getById(id);
         userService.delete(user);

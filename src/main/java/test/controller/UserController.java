@@ -8,21 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import test.service.UserService;
 
-import java.util.List;
-
 @Controller
 public class UserController {
 
-    private UserService userService;
-
-    public UserController() {
-    }
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
 
     @GetMapping(value = "/registration")
     public String registration() {
@@ -31,7 +25,7 @@ public class UserController {
 
     @PostMapping(value = "/registration")
     public String addUser(@ModelAttribute("user") User user) {
-        userService.add(user);
+        userService.addFromRegistration(user);
         return "redirect:/";
     }
 
@@ -42,7 +36,8 @@ public class UserController {
 
     @GetMapping(value = "/user")
     public String user(Model model) {
-        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User loggedInUser = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
         model.addAttribute("loggedInUser", loggedInUser);
         return "user";
     }
