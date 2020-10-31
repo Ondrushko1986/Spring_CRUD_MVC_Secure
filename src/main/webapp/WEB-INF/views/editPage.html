@@ -13,8 +13,8 @@
     <label for="email">email</label>
     <input type="text" name="email" id="email" th:value="${user.email}">
     <label for="password">password</label>
-    <input type="text" name="password" id="password" th:value="${user.password}">
-    <p><select size="3" name="role">
+    <input type="text" name="password" id="password">
+    <p><select size="3" name="role" multiple>
         <option disabled>Select a role</option>
         <option value="ADMIN">ADMIN</option>
         <option selected value="USER">USER</option>

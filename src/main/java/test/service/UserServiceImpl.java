@@ -69,22 +69,48 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void add(User user, String role) {
         if (role.equalsIgnoreCase("admin")) {
-            user.setRoles(Collections.singleton(new Role(2L, "ROLE_ADMIN")));
-        } else {
-            user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+            Set<Role> roles = new HashSet<>();
+            roles.add(roleDAO.getRoleById(2L));
+            user.setRoles(roles);
+        }
+        if (role.equalsIgnoreCase("user")) {
+            Set<Role> roles = new HashSet<>();
+            roles.add(roleDAO.getRoleById(1L));
+            user.setRoles(roles);
+        }
+        if (role.equalsIgnoreCase("admin,user")) {
+            Set<Role> roles = new HashSet<>();
+            roles.add(roleDAO.getRoleById(1L));
+            roles.add(roleDAO.getRoleById(2L));
+            user.setRoles(roles);
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDAO.add(user);
     }
 
     @Override
-    public void edit(User user, String role) {
+    public void edit(User user, String role, String password) {
         if (role.equalsIgnoreCase("admin")) {
-            user.setRoles(Collections.singleton(new Role(2L, "ROLE_ADMIN")));
-        } else {
-            user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+            Set<Role> roles = new HashSet<>();
+            roles.add(roleDAO.getRoleById(2L));
+            user.setRoles(roles);
         }
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (role.equalsIgnoreCase("user")) {
+            Set<Role> roles = new HashSet<>();
+            roles.add(roleDAO.getRoleById(1L));
+            user.setRoles(roles);
+        }
+        if (role.equalsIgnoreCase("admin,user")) {
+            Set<Role> roles = new HashSet<>();
+            roles.add(roleDAO.getRoleById(1L));
+            roles.add(roleDAO.getRoleById(2L));
+            user.setRoles(roles);
+        }
+        if (password == null || password.isEmpty()) {
+            user.setPassword(userDAO.getById(user.getId()).getPassword());
+        } else {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
         userDAO.edit(user);
     }
 

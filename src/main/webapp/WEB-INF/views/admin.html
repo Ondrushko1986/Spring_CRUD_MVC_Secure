@@ -20,7 +20,7 @@
             <td th:text="${user.id}"></td>
             <td th:text="${user.username}"></td>
             <td th:text="${user.password}"></td>
-            <td th:each="role : ${user.getRoles()}" th:text="${role.getAuthority()}"></td>
+            <td th:each="role : ${user.getRoles()}" th:text="${role.getRole()}"></td>
             <td>
                 <a th:href="@{/admin/edit/{userid}(userid=${user.id})}">edit</a>
                 <a th:href="@{/admin/delete/{userid}(userid=${user.id})}">delete</a>

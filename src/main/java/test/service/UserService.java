@@ -13,7 +13,7 @@ public interface UserService {
 
     void delete(User user);
 
-    void edit(User user, String role);
+    void edit(User user, String role, String password);
 
     User getById(int id);
 
